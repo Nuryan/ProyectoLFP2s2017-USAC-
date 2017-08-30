@@ -14,25 +14,35 @@ import javax.swing.JTextArea;
  * @author Misa
  */
 public class Analizar {
-    public ActionListener getAnalizar(JTextArea textoLFP, JTextArea textoHTML){
+
+    public ActionListener getAnalizar(JTextArea textoLFP, JTextArea textoHTML) {
         ActionListener devolver = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 analizar(textoLFP, textoHTML);
             }
         };
-        
+
         return devolver;
     }
-    
-    private void analizar(JTextArea textoLFP, JTextArea textoHTML){
-        //textoHTML.setText(textoLFP.getText());
-    
-        String[] lineas = textoLFP.getText().split("\n");
-        textoHTML.setText(limpiarEntrada(textoLFP.getText()));
+
+    private void analizar(JTextArea textoLFP, JTextArea textoHTML) {
+        String[] entrada = limpiarEntrada(textoLFP);
+        int a1, a2;
+        for (a1 = 0; a1 < entrada.length; a1++) {
+            for(a2 = 0; a2<entrada[a1].length(); a2++){
+                
+            }
+        }
     }
-    
-    private String limpiarEntrada(String texto){
-        return texto.replaceAll("\\t", " ");
+
+    private String[] limpiarEntrada(JTextArea textoLFP) {
+        String[] entrada = textoLFP.getText().split("\n");
+        String[] devolver = new String[entrada.length];
+        int i;
+        for (i = 0; i < entrada.length; i++) {
+            devolver[i]= entrada[i].replaceAll("\\t", " ").replaceAll(" +", " ");
+        }
+        return devolver;
     }
 }

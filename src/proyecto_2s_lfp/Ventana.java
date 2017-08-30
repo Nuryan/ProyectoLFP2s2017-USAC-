@@ -163,5 +163,16 @@ public class Ventana {
         guardarComoMenuAmbos.addActionListener(manejoArchivos.guardarComoAmbos(textoLFP, textoHTML));
         traducirMenu.addActionListener(analizar.getAnalizar(textoLFP, textoHTML));
         abrirMenu.addActionListener(manejoArchivos.leerLFP(textoLFP, textoHTML));
+        
+        
+        ActionListener limpieza = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textoHTML.setText("");
+                textoLFP.setText("");
+            }
+        };
+        
+        manualTecnicoMenu.addActionListener(limpieza);
     }    
 }
