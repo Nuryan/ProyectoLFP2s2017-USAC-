@@ -35,8 +35,23 @@ public class Analizar {
             for (a2 = 0; a2 < entrada[a1].length(); a2++) {
                 switch (entrada[a1].charAt(a2)) {
                     case 0:
-                        if((int)entrada[a1].charAt(a2) > 64 && (int)entrada[a1].charAt(a2) > 64 ){
-                            
+                        break;
+                    case 2:
+                        if ((int) entrada[a1].charAt(a2) > 64 && (int) entrada[a1].charAt(a2) < 91 || (int) entrada[a1].charAt(a2) == 209
+                                || //lo anterior es para los caracteres alfabeticos en mayusculas
+                                (int) entrada[a1].charAt(a2) > 96 && (int) entrada[a1].charAt(a2) < 123 || (int) entrada[a1].charAt(a2) == 241
+                                || //esto es para los caracteres en minusculas, ambos incluyen la ñ 
+                                (int) entrada[a1].charAt(a2) == 193 /*Á*/ || (int) entrada[a1].charAt(a2) == 201/*É*/
+                                || (int) entrada[a1].charAt(a2) == 205 /*Í*/ || (int) entrada[a1].charAt(a2) == 211/*Ó*/
+                                || (int) entrada[a1].charAt(a2) == 218/*Ú*/
+                                || //letras mayusculas con tilde
+                                (int) entrada[a1].charAt(a2) == 225 /*Á*/ || (int) entrada[a1].charAt(a2) == 233/*É*/
+                                || (int) entrada[a1].charAt(a2) == 237 /*Í*/ || (int) entrada[a1].charAt(a2) == 243/*Ó*/
+                                || (int) entrada[a1].charAt(a2) == 250/*Ú*/
+                                || //letras minusculas con tilde
+                                (int) entrada[a1].charAt(a2) > 47 && (int) entrada[a1].charAt(a2) < 58) {
+                            // numeros
+
                         }
                         break;
                 }
