@@ -16,7 +16,8 @@ public class Dato {
     private String dato;
     private int linea;
     private int posicion;
-
+    private int tipo;
+    
     public Dato(String dato, int linea, int posicion) {
         this.anterior = null;
         this.siguiente = null;
@@ -93,5 +94,19 @@ public class Dato {
      */
     public void setPosicion(int posicion) {
         this.posicion = posicion;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public int getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 }

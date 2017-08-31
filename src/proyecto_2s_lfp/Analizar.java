@@ -28,10 +28,18 @@ public class Analizar {
 
     private void analizar(JTextArea textoLFP, JTextArea textoHTML) {
         String[] entrada = limpiarEntrada(textoLFP);
-        int a1, a2;
+        int a1, a2, estado = 0;
+        String lexema = "";
+
         for (a1 = 0; a1 < entrada.length; a1++) {
-            for(a2 = 0; a2<entrada[a1].length(); a2++){
-                
+            for (a2 = 0; a2 < entrada[a1].length(); a2++) {
+                switch (entrada[a1].charAt(a2)) {
+                    case 0:
+                        if((int)entrada[a1].charAt(a2) > 64 && (int)entrada[a1].charAt(a2) > 64 ){
+                            
+                        }
+                        break;
+                }
             }
         }
     }
@@ -41,7 +49,7 @@ public class Analizar {
         String[] devolver = new String[entrada.length];
         int i;
         for (i = 0; i < entrada.length; i++) {
-            devolver[i]= entrada[i].replaceAll("\\t", " ").replaceAll(" +", " ");
+            devolver[i] = entrada[i].replaceAll("\\t", " ").replaceAll(" +", " ");
         }
         return devolver;
     }

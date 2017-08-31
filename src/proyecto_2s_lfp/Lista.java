@@ -17,7 +17,7 @@ public class Lista {
         cabeza = null;
     }
 
-    public void push(String dato, int linea, int posicion) {
+    public void push(String dato, int linea, int posicion, String tipo) {
         Dato ingresando = new Dato(dato, linea, posicion);
         if (cabeza == null) {
             cabeza = ingresando;
@@ -42,7 +42,7 @@ public class Lista {
         return auxiliar;
     }
 
-    public int lengt() {
+    public int length() {
         int tamaño = 1;
         if (cabeza == null) {
             return 0;
