@@ -17,13 +17,16 @@ public class Dato {
     private int linea;
     private int posicion;
     private int tipo;
+    private int correlativo;
     
-    public Dato(String dato, int linea, int posicion) {
+    public Dato(String dato, int linea, int posicion, int tipo, int correlativo) {
         this.anterior = null;
         this.siguiente = null;
         this.dato = dato;
         this.linea = linea;
         this.posicion = posicion;
+        this.tipo = tipo;
+        this.correlativo = correlativo;
     }
 
     /**
@@ -108,5 +111,19 @@ public class Dato {
      */
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    /**
+     * @return the correlativo
+     */
+    public int getCorrelativo() {
+        return correlativo;
+    }
+
+    /**
+     * @param correlativo the correlativo to set
+     */
+    public void setCorrelativo(int correlativo) {
+        this.correlativo = correlativo;
     }
 }

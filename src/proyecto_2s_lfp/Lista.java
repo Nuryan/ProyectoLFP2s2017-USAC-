@@ -12,13 +12,14 @@ package proyecto_2s_lfp;
 public class Lista {
 
     private Dato cabeza;
-
+    private int correlativo;
     public Lista() {
         cabeza = null;
+        correlativo = 0;
     }
 
-    public void push(String dato, int linea, int posicion, String tipo) {
-        Dato ingresando = new Dato(dato, linea, posicion);
+    public void push(String dato, int linea, int posicion, int tipo) {
+        Dato ingresando = new Dato(dato, linea, posicion, tipo, correlativo);
         if (cabeza == null) {
             cabeza = ingresando;
             cabeza.setAnterior(cabeza);
@@ -31,6 +32,7 @@ public class Lista {
             auxiliar.setSiguiente(ingresando);
             ingresando.setAnterior(auxiliar);
         }
+        correlativo++;
     }
 
     public Dato get(int posicionDato) {
