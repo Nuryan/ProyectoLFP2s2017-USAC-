@@ -17,7 +17,14 @@ public class Lista {
         cabeza = null;
         correlativo = 0;
     }
-
+/*
+    Tabla de tipos >>
+    
+    -1 >> error
+    0  >> palabra reservada
+    1  >> simbolo
+    2  >> identificador
+    */
     public void push(String dato, int linea, int posicion, int tipo) {
         Dato ingresando = new Dato(dato, linea, posicion, tipo, correlativo);
         if (cabeza == null) {

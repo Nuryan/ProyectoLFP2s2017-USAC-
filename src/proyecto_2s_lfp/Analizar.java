@@ -33,8 +33,11 @@ public class Analizar {
 
     private void analizar(JTextArea textoLFP, JTextArea textoHTML) {
         String[] entrada = limpiarEntrada(textoLFP);
-        int a1, a2, existeError = 0;
+        int a1, a2, existeError = 0, tipoLexema = 0;
         String lexema = "";
+
+        Lista tokens = new Lista();
+
         for (a1 = 0; a1 < entrada.length; a1++) {
             for (a2 = 0; a2 < entrada[a1].length(); a2++) {
 
@@ -60,31 +63,51 @@ public class Analizar {
                         || (int) entrada[a1].charAt(a2) == 91//[
                         || (int) entrada[a1].charAt(a2) == 93//]
                         || (int) entrada[a1].charAt(a2) == 58) {//:
-                    pushear();
-                    lexema = "";
-                } else if ((int) entrada[a1].charAt(a2) == 123) {
-                    if(lexema.length()>0){
-                        pushear();
-                        lexema = "";
+                    if (lexema.length() > 0) {
+                        tokens.push(lexema, a1, a2 - lexema.length(), getTipoLexema(lexema, existeError));
                     }
+
+                    tokens.push(""+entrada[a1].charAt(a2), a1, a2, 1);
+                    lexema = "";
+                    existeError = 0;
+                } else if ((int) entrada[a1].charAt(a2) == 32) {
+                    if (lexema.length() > 0) {
+                        tokens.push(lexema, a1, a2 - lexema.length(), getTipoLexema(lexema, existeError));
+                        lexema = "";
+                        existeError = 0;
+                    }
+                } else {
+                    lexema = lexema + entrada[a1].charAt(a2);
+                    existeError++;
                 }
             }
+
+            //System.out.println(tokens.length());
         }
-    }
 
-    private void pushear() {
-
-    }
-
-    private int getTipoLexema(String dato){
-        int tipo = -1, i;
-        
-        for(i = 0; i){
+        int a;
+        for (a = 0; a < tokens.length(); a++) {
+            System.out.println(tokens.get(a).getDato() +"  y es  :"+ tokens.get(a).getTipo());
             
         }
         
-        return tipo;
+        System.out.println(tokens.length());
     }
+
+    private int getTipoLexema(String dato, int existeError) {
+        int i;
+        if (existeError != 0) {
+            return -1;
+        } else {
+            for (i = 0; i < palabrasReservadas.length; i++) {
+                if (dato.equalsIgnoreCase(palabrasReservadas[i])) {
+                    return 0;
+                }
+            }
+        }
+        return 2;
+    }
+
     private String[] limpiarEntrada(JTextArea textoLFP) {
         String[] entrada = textoLFP.getText().split("\n");
         String[] devolver = new String[entrada.length];
