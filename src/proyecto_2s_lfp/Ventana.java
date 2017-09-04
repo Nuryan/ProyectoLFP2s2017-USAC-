@@ -174,5 +174,7 @@ public class Ventana {
         };
         
         manualTecnicoMenu.addActionListener(limpieza);
+        
+        
     }    
 }
