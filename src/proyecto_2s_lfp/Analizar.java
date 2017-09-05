@@ -67,7 +67,7 @@ public class Analizar {
                         tokens.push(lexema, a1, a2 - lexema.length(), getTipoLexema(lexema, existeError));
                     }
 
-                    tokens.push(""+entrada[a1].charAt(a2), a1, a2, 1);
+                    tokens.push("" + entrada[a1].charAt(a2), a1, a2, 1);
                     lexema = "";
                     existeError = 0;
                 } else if ((int) entrada[a1].charAt(a2) == 32) {
@@ -87,11 +87,20 @@ public class Analizar {
 
         int a;
         for (a = 0; a < tokens.length(); a++) {
-            System.out.println(tokens.get(a).getDato() +"  y es  :"+ tokens.get(a).getTipo());
-            
+            System.out.println(tokens.get(a).getDato() + "  y es  :" + tokens.get(a).getTipo());
+
         }
-        
+
         System.out.println(tokens.length());
+    }
+
+    private void reAnalizar(Lista lista) {
+        //metodo creado por la necesidad de identiricar valores de elementos de los identificadores en si
+
+        /*
+        Estructura esperada 
+        
+         */
     }
 
     private int getTipoLexema(String dato, int existeError) {
