@@ -34,8 +34,7 @@ public class Analizar {
     private void analizar(JTextArea textoLFP, JTextArea textoHTML) {
         String[] entrada = limpiarEntrada(textoLFP);
         int a1, a2, existeError = 0, estadoActual = 0, objetosACerrar = 0;
-        int estadoUnoRecorrido = 0, estadoCuatroRecorrido = 0;
-        int[] estadoEsperado = new int[4];
+        int[] estadoEsperado = {0}, estadosRecorridos = {0, 0, 0, 0, 0, 0, 0};
         String lexema = "";
 
         Lista tokens = new Lista();
@@ -45,51 +44,77 @@ public class Analizar {
                 if (entrada[a1].length() == 1 && entrada[a1].charAt(a2) == 32) {
                     //esto pasa si la cadena o viene vacia, o solo trae un espacio
                 } else {
-                    estadoActual = getEstado(entrada[a1].charAt(a2), estadoUnoRecorrido, estadoCuatroRecorrido);
-
-                    if (estadoEsperado.length != 4) {
-
-                    } else {
-
-                    }
 
                     estadoEsperado = getEstadoEsperado(estadoActual);
                 }
             }
         }
     }
+//3
 
-    private int getEstado(char dato, int estadoUnoRecorrido, int estadoCuatroRecorrido) {
+    private int getEstado(char dato, int[] estadosRecorridos, int[] estadoEsperado) {
+        int i, estado, auxiliarEstado = -1;
+        for (i = 0; i < estadosRecorridos.length; i++) {
+            if (estadosRecorridos[i] == 1) {
+                auxiliarEstado = i;
+            }
+        }
 
-        if (dato == 123) {// llave abierta   {
-            return 0;
-        } else if (dato == 34 && estadoUnoRecorrido == 0) {// comilla
-            return 1;
-        } else if (dato > 61 && dato < 91 || dato == 209//abecedario mayusculas
-                || dato > 96 && dato < 123 || dato == 241//abecedario minusculas
-                || dato == 193/*Á*/ || dato == 201/*È*/
-                || dato == 205/*Ì*/ || dato == 211/*Ó*/
-                || dato == 218/*Ú*/
-                || dato == 225/*á*/ || dato == 233/*é*/
-                || dato == 237/*í*/ || dato == 243/*ó*/
-                || dato == 250/*ú*/
-                || dato > 47 && dato < 58) {//numero
-            return 2;
-        } else if (dato == 34 && estadoUnoRecorrido != 0) {
-            return 3;
-        } else if (dato == 125 || dato == 93 || dato == 58) {
-            return 4;
-        } else if (estadoCuatroRecorrido != 0) {
-            if (dato == 34 || dato == 123 || dato == 91) {
-                return 5;
+        if (dato == 123) {
+            estado = 0;
+        } else if (dato == 34) {
+
+            if (auxiliarEstado == 0) {
+                estado = 1;
+            } else if (auxiliarEstado == 1) {
+                estado = 2;
+            } else if (auxiliarEstado == 2) {
+                estado = 3;
+            } else if (auxiliarEstado == 4) {
+                estado = 5;
             } else {
-                return -1;
+                estado = -1;
+            }
+        } else if (dato > 64 && dato < 91 || dato == 209
+                || //lo anterior es para los caracteres alfabeticos en mayusculas
+                dato > 96 && dato < 123 || dato == 241
+                || //esto es para los caracteres en minusculas, ambos incluyen la ñ 
+                dato == 193 /*Á*/ || dato == 201/*É*/
+                || dato == 205 /*Í*/ || dato == 211/*Ó*/
+                || dato == 218/*Ú*/
+                || //letras mayusculas con tilde
+                dato == 225 /*Á*/ || dato == 233/*É*/
+                || dato == 237 /*Í*/ || dato == 243/*Ó*/
+                || dato == 250/*Ú*/
+                || //letras minusculas con tilde
+                dato > 47 && dato < 58) {
+            if (auxiliarEstado == 1) {
+                estado = 2;
+            } else if (auxiliarEstado == 2) {
+                estado = 3;
+            } else {
+                estado = -1;
+            }
+        } else if (dato == 58 || dato == 125 || dato == 93) {
+            if (auxiliarEstado == 3) {
+                estado = 4;
+            }
+        } else if (dato == 123) {
+            if(auxiliarEstado == 4){
+                estado = 5;
+            }
+        } else if (dato ==91) {
+            if(auxiliarEstado == 4){
+                estado = 5;
             }
         } else if (dato == 44) {
-            return 6;
-        } else {
-            return -1;
+            if(auxiliarEstado == 3){
+                estado = 4;
+            }else if(auxiliarEstado == 4){
+                estado = 6;
+            }
         }
+
     }
 
     private int[] getEstadoEsperado(int estadoActual) {
@@ -103,7 +128,7 @@ public class Analizar {
                 return devolver;
             }
             case 2: {
-                int[] devolver = {3};
+                int[] devolver = {3, 4};
                 return devolver;
             }
             case 3: {
@@ -129,13 +154,16 @@ public class Analizar {
         }
     }
 
-    private int vinoLoEsperado(int estado, int[]esperando){
+    private int vinoLoEsperado(int estado, int[] esperando) {
         int i;
-        for(i = 0; i<esperando.length; i++){
-            
+        for (i = 0; i < esperando.length; i++) {
+            if (estado == esperando[i]) {
+                return 1;
+            }
         }
+        return -1;
     }
-    
+
     private int getTipoLexema(String dato, int existeError) {
         int i;
         if (existeError != 0) {
