@@ -13,21 +13,39 @@ public class Lista {
 
     private Dato cabeza;
     private int correlativo;
+
     public Lista() {
         cabeza = null;
         correlativo = 0;
     }
-/* 
+
+    /*
     Tabla de tipos >>
     
     -1 >> error
     0  >> palabra reservada
     1  >> simbolo
     2  >> identificador
-    3  >> valor
-    */
+     */
     public void push(String dato, int linea, int posicion, int tipo) {
         Dato ingresando = new Dato(dato, linea, posicion, tipo, correlativo);
+        if (cabeza == null) {
+            cabeza = ingresando;
+            cabeza.setAnterior(cabeza);
+            cabeza.setSiguiente(null);
+        } else {
+            Dato auxiliar = cabeza;
+            while (auxiliar.getSiguiente() != null) {
+                auxiliar = auxiliar.getSiguiente();
+            }
+            auxiliar.setSiguiente(ingresando);
+            ingresando.setAnterior(auxiliar);
+        }
+        correlativo++;
+    }
+
+    public void push(Dato dato) {
+        Dato ingresando = new Dato(dato.getDato(), dato.getLinea(), dato.getPosicion(), dato.getTipo(), correlativo);
         if (cabeza == null) {
             cabeza = ingresando;
             cabeza.setAnterior(cabeza);
@@ -66,4 +84,7 @@ public class Lista {
         }
     }
 
+    public int getCorrelativo(){
+        return correlativo;
+    }
 }

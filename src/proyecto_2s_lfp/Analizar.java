@@ -33,135 +33,97 @@ public class Analizar {
 
     private void analizar(JTextArea textoLFP, JTextArea textoHTML) {
         String[] entrada = limpiarEntrada(textoLFP);
-        int a1, a2, existeError = 0, estadoActual = 0, objetosACerrar = 0;
-        int[] estadoEsperado = {0}, estadosRecorridos = {0, 0, 0, 0, 0, 0, 0};
+        int a1, a2, existeError = 0, tipoLexema = 0;
         String lexema = "";
-
         Lista tokens = new Lista();
+        Lista preLista = new Lista();
 
         for (a1 = 0; a1 < entrada.length; a1++) {
             for (a2 = 0; a2 < entrada[a1].length(); a2++) {
-                if (entrada[a1].length() == 1 && entrada[a1].charAt(a2) == 32) {
-                    //esto pasa si la cadena o viene vacia, o solo trae un espacio
-                } else {
 
-                    estadoEsperado = getEstadoEsperado(estadoActual);
+                if ((int) entrada[a1].charAt(a2) > 64 && (int) entrada[a1].charAt(a2) < 91 || (int) entrada[a1].charAt(a2) == 209
+                        || //lo anterior es para los caracteres alfabeticos en mayusculas
+                        (int) entrada[a1].charAt(a2) > 96 && (int) entrada[a1].charAt(a2) < 123 || (int) entrada[a1].charAt(a2) == 241
+                        || //esto es para los caracteres en minusculas, ambos incluyen la ñ 
+                        (int) entrada[a1].charAt(a2) == 193 /*Á*/ || (int) entrada[a1].charAt(a2) == 201/*É*/
+                        || (int) entrada[a1].charAt(a2) == 205 /*Í*/ || (int) entrada[a1].charAt(a2) == 211/*Ó*/
+                        || (int) entrada[a1].charAt(a2) == 218/*Ú*/
+                        || //letras mayusculas con tilde
+                        (int) entrada[a1].charAt(a2) == 225 /*Á*/ || (int) entrada[a1].charAt(a2) == 233/*É*/
+                        || (int) entrada[a1].charAt(a2) == 237 /*Í*/ || (int) entrada[a1].charAt(a2) == 243/*Ó*/
+                        || (int) entrada[a1].charAt(a2) == 250/*Ú*/
+                        || //letras minusculas con tilde
+                        (int) entrada[a1].charAt(a2) > 47 && (int) entrada[a1].charAt(a2) < 58) {
+                    // numeros
+                    lexema = lexema + entrada[a1].charAt(a2);
+                } else if ((int) entrada[a1].charAt(a2) == 123 //{
+                        || (int) entrada[a1].charAt(a2) == 125//}
+                        || (int) entrada[a1].charAt(a2) == 34//"
+                        || (int) entrada[a1].charAt(a2) == 44//,
+                        || (int) entrada[a1].charAt(a2) == 91//[
+                        || (int) entrada[a1].charAt(a2) == 93//]
+                        || (int) entrada[a1].charAt(a2) == 58) {//:
+                    if (lexema.length() > 0) {
+                        preLista.push(lexema, a1+1, a2 - lexema.length()+1, getTipoLexema(lexema, existeError));
+                    }
+                    preLista.push("" + entrada[a1].charAt(a2), a1+1, a2+1, 1);
+                    lexema = "";
+                    existeError = 0;
+                } else if ((int) entrada[a1].charAt(a2) == 32) {
+                    if (lexema.length() > 0) {
+                        preLista.push(lexema, a1+1, a2 - lexema.length()+1, getTipoLexema(lexema, existeError));
+                        lexema = "";
+                        existeError = 0;
+                    }
+                } else {
+                    lexema = lexema + entrada[a1].charAt(a2);
+                    existeError++;
+                }
+            }
+
+            //System.out.println(tokens.length());
+        }
+        tokens = reordenar(preLista);
+        int a;
+//        for (a = 0; a < tokens.length(); a++) {
+//            System.out.println(tokens.get(a).getDato() + "  y es  :" + tokens.get(a).getTipo());
+//
+//        }
+        
+        for (a = 0; a < preLista.length(); a++) {
+            System.out.println(preLista.get(a).getDato() + "  y es  :" + preLista.get(a).getTipo());
+
+        }
+
+        System.out.println(preLista.length());
+    }
+
+    private Lista reordenar(Lista preLista) {
+        //metodo para reord
+        String lexemaAuxiliar = "";
+        Lista devolver = new Lista();
+        int i, insertandoLexema = 0, valorColumnaInicial = 0, valorLineaInicial = 0, valor = preLista.getCorrelativo(), primeraComillaEncontrada = 0;
+        for (i = 0; i < valor; i++) {
+            if (preLista.get(i).getTipo() == 2) {
+                if(insertandoLexema == 0){
+                    lexemaAuxiliar = preLista.get(i).getDato();
+                    valorColumnaInicial = preLista.get(i).getPosicion();
+                    valorLineaInicial = preLista.get(i).getLinea();
+                    insertandoLexema++;
+                }else{
+                    lexemaAuxiliar = lexemaAuxiliar + " " + preLista.get(i).getDato();
+                }
+            } else {
+                if(insertandoLexema == 0){
+                    devolver.push(preLista.get(i));
+                }else{
+                    insertandoLexema = 0;
+                    devolver.push(lexemaAuxiliar, valorLineaInicial, valorColumnaInicial, 2);
+                    devolver.push(preLista.get(i));
                 }
             }
         }
-    }
-//3
-
-    private int getEstado(char dato, int[] estadosRecorridos, int[] estadoEsperado) {
-        int i, estado, auxiliarEstado = -1;
-        for (i = 0; i < estadosRecorridos.length; i++) {
-            if (estadosRecorridos[i] == 1) {
-                auxiliarEstado = i;
-            }
-        }
-
-        if (dato == 123) {
-            estado = 0;
-        } else if (dato == 34) {
-
-            if (auxiliarEstado == 0) {
-                estado = 1;
-            } else if (auxiliarEstado == 1) {
-                estado = 2;
-            } else if (auxiliarEstado == 2) {
-                estado = 3;
-            } else if (auxiliarEstado == 4) {
-                estado = 5;
-            } else {
-                estado = -1;
-            }
-        } else if (dato > 64 && dato < 91 || dato == 209
-                || //lo anterior es para los caracteres alfabeticos en mayusculas
-                dato > 96 && dato < 123 || dato == 241
-                || //esto es para los caracteres en minusculas, ambos incluyen la ñ 
-                dato == 193 /*Á*/ || dato == 201/*É*/
-                || dato == 205 /*Í*/ || dato == 211/*Ó*/
-                || dato == 218/*Ú*/
-                || //letras mayusculas con tilde
-                dato == 225 /*Á*/ || dato == 233/*É*/
-                || dato == 237 /*Í*/ || dato == 243/*Ó*/
-                || dato == 250/*Ú*/
-                || //letras minusculas con tilde
-                dato > 47 && dato < 58) {
-            if (auxiliarEstado == 1) {
-                estado = 2;
-            } else if (auxiliarEstado == 2) {
-                estado = 3;
-            } else {
-                estado = -1;
-            }
-        } else if (dato == 58 || dato == 125 || dato == 93) {
-            if (auxiliarEstado == 3) {
-                estado = 4;
-            }
-        } else if (dato == 123) {
-            if(auxiliarEstado == 4){
-                estado = 5;
-            }
-        } else if (dato ==91) {
-            if(auxiliarEstado == 4){
-                estado = 5;
-            }
-        } else if (dato == 44) {
-            if(auxiliarEstado == 3){
-                estado = 4;
-            }else if(auxiliarEstado == 4){
-                estado = 6;
-            }
-        }
-
-    }
-
-    private int[] getEstadoEsperado(int estadoActual) {
-        switch (estadoActual) {
-            case 0: {
-                int[] devolver = {1};
-                return devolver;
-            }
-            case 1: {
-                int[] devolver = {2};
-                return devolver;
-            }
-            case 2: {
-                int[] devolver = {3, 4};
-                return devolver;
-            }
-            case 3: {
-                int[] devolver = {2, 4};
-                return devolver;
-            }
-            case 4: {
-                int[] devolver = {1, 5, 6};
-                return devolver;
-            }
-            case 5: {
-                int[] devolver = {0, 1, 2};
-                return devolver;
-            }
-            case 6: {
-                int[] devolver = {1, -2};//-2 por si se acaba todo, no hay utilizacion en este punto
-                return devolver;
-            }
-            default: {
-                int[] devolver = {-1};
-                return devolver;
-            }
-        }
-    }
-
-    private int vinoLoEsperado(int estado, int[] esperando) {
-        int i;
-        for (i = 0; i < esperando.length; i++) {
-            if (estado == esperando[i]) {
-                return 1;
-            }
-        }
-        return -1;
+        return devolver;
     }
 
     private int getTipoLexema(String dato, int existeError) {
