@@ -86,6 +86,110 @@ public class ManejoArchivo {
         return devolver;
     }
 
+    public ActionListener guardarLexemasComo(Lista tokens) {
+        ActionListener devolver = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guardarLexemas(tokens);
+            }
+        };
+
+        return devolver;
+    }
+
+    private void guardarLexemas(Lista tokens) {
+        try {
+            JFileChooser archivo = new JFileChooser();
+            FileNameExtensionFilter filtro = new FileNameExtensionFilter(".html", "html");
+            archivo.setFileFilter(filtro);
+            archivo.showSaveDialog(archivo);
+            File guardar = archivo.getSelectedFile();
+            BufferedWriter escritor;
+            String terminacion = ".html";
+
+            if (guardar.exists()) {
+                //pasos a dar si el fichero ya existe    
+
+                int continuar = JOptionPane.showConfirmDialog(null, "El archivo ya existe, ¿Sobre-escribir?", "¿Sobre-escribir?", 0, 0);
+
+                if (continuar == 0) {
+                    escritor = new BufferedWriter(new FileWriter(guardar));
+                    int auxiliarFor;
+                    escritor.write("<html><head><title>cabeza</title></head><body><table>");
+                    escritor.write("<tr>" + "\r\n");
+                    escritor.write("<td>Token</td>" + "\r\n");
+                    escritor.write("<td>Lexema</td>" + "\r\n");
+                    escritor.write("<td>Linea</td>" + "\r\n");
+                    escritor.write("<td>Columna</td>" + "\r\n");
+                    escritor.write("</tr>" + "\r\n");
+                    for (auxiliarFor = 0; auxiliarFor < tokens.length(); auxiliarFor++) {
+                        escritor.write("<tr>" + "\r\n");
+                        switch (tokens.get(auxiliarFor).getTipo()) {
+                            case -1:
+                                escritor.write("<td> Error </td>" + "\r\n");
+                                break;
+                            case 0:
+                                escritor.write("<td> Palabra Reservada</td>" + "\r\n");
+                                break;
+                            case 1:
+                                escritor.write("<td> Simbolo</td>" + "\r\n");
+                                break;
+                            case 2:
+                                escritor.write("<td>Identificador</td>" + "\r\n");
+                                break;
+                        }
+
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getDato()+"</td>" + "\r\n");
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getLinea()+"</td>" + "\r\n");
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getPosicion()+"</td>" + "\r\n");
+                        escritor.write("</tr>" + "\r\n");
+                    }
+                    escritor.write("</table></body></html>");
+                    escritor.close();
+                } else {
+                    return;
+                }
+
+            } else {
+                escritor = new BufferedWriter(new FileWriter(guardar + terminacion));
+                int auxiliarFor;
+                escritor.write("<html><head><title>cabeza</title></head><body><table>");
+                    escritor.write("<tr>" + "\r\n");
+                    escritor.write("<td>Token</td>" + "\r\n");
+                    escritor.write("<td>Lexema</td>" + "\r\n");
+                    escritor.write("<td>Linea</td>" + "\r\n");
+                    escritor.write("<td>Columna</td>" + "\r\n");
+                    escritor.write("</tr>" + "\r\n");
+                    for (auxiliarFor = 0; auxiliarFor < tokens.length(); auxiliarFor++) {
+                        escritor.write("<tr>" + "\r\n");
+                        switch (tokens.get(auxiliarFor).getTipo()) {
+                            case -1:
+                                escritor.write("<td> Error </td>" + "\r\n");
+                                break;
+                            case 0:
+                                escritor.write("<td> Palabra Reservada</td>" + "\r\n");
+                                break;
+                            case 1:
+                                escritor.write("<td> Simbolo</td>" + "\r\n");
+                                break;
+                            case 2:
+                                escritor.write("<td>Identificador</td>" + "\r\n");
+                                break;
+                        }
+
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getDato()+"</td>" + "\r\n");
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getLinea()+"</td>" + "\r\n");
+                        escritor.write("<td>" + tokens.get(auxiliarFor).getPosicion()+"</td>" + "\r\n");
+                        escritor.write("</tr>" + "\r\n");
+                    }
+                    escritor.write("</table></body></html>");
+                    escritor.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Problemas en el metodo guardar lexema, clase manejo archivos " + e.toString());
+        }
+    }
+
     private void abrirLFP(JTextArea textoLFP, JTextArea textoHTML) {
         if (archivoAbiertoLFP == null) {
             if (textoLFP.getText().length() < 2) {

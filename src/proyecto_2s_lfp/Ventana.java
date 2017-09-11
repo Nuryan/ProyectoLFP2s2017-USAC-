@@ -5,8 +5,10 @@
  */
 package proyecto_2s_lfp;
 
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -29,7 +31,7 @@ public class Ventana {
     private JScrollPane areaHTML;
     private JTextArea textoLFP;
     private JTextArea textoHTML;
-    
+
     private JMenuBar barrita;
     private JMenu menuArchivo;
     private JMenu menuAyuda;
@@ -48,10 +50,11 @@ public class Ventana {
     private JMenuItem manualTecnicoMenu;
     private JLabel indicadorLFP;
     private JLabel indicadorHTML;
-    
+
     private ManejoArchivo manejoArchivos;
-    
+
     private Analizar analizar;
+
     public Ventana() {
         iniciarElementos();
 
@@ -63,7 +66,7 @@ public class Ventana {
         contenedor = new JPanel();
         barrita = new JMenuBar();
         menuArchivo = new JMenu("Archivo");
-        menuAyuda = new JMenu("Ayuda"); 
+        menuAyuda = new JMenu("Ayuda");
         nuevoMenu = new JMenuItem("Nuevo");
         abrirMenu = new JMenuItem("Abrir .LFP");
         guardarMenuLFP = new JMenuItem("Guardar .LFP");
@@ -82,9 +85,10 @@ public class Ventana {
         areaHTML = new JScrollPane(textoHTML);
         indicadorLFP = new JLabel("Archivo LFP");
         indicadorHTML = new JLabel("Archivo HTML");
-        
+        guardarLexemasMenu = new JMenuItem("Guardar Lexemas como HTML");
+
         manejoArchivos = new ManejoArchivo();
-        
+
         analizar = new Analizar();
     }
 
@@ -102,10 +106,10 @@ public class Ventana {
 
         areaLFP.setBounds(7, 25, 495, 500);
         areaHTML.setBounds(512, 25, 495, 500);
-        
-        indicadorLFP.setBounds(225, 525 , 100,35);
-        indicadorHTML.setBounds(725, 525 , 100,35);
-        
+
+        indicadorLFP.setBounds(225, 525, 100, 35);
+        indicadorHTML.setBounds(725, 525, 100, 35);
+
         textoLFP.setLineWrap(true);
         textoLFP.setWrapStyleWord(true);
         textoHTML.setLineWrap(true);
@@ -135,6 +139,7 @@ public class Ventana {
         menuArchivo.add(guardarComoMenuHTML);
         menuArchivo.add(guardarComoMenuAmbos);
         menuArchivo.add(traducirMenu);
+        menuArchivo.add(guardarLexemasMenu);
         menuArchivo.add(salirMenu);
 
         menuAyuda.add(manualUsuarioMenu);
@@ -150,11 +155,11 @@ public class Ventana {
         };
 
         salirMenu.addActionListener(salir);
-    
+
         añadirAccionesBarrita();
     }
 
-    private void añadirAccionesBarrita(){
+    private void añadirAccionesBarrita() {
         guardarComoMenuLFP.addActionListener(manejoArchivos.getGuardarComo(textoLFP, 0));
         guardarMenuLFP.addActionListener(manejoArchivos.getGuardar(textoLFP, 0));
         guardarComoMenuHTML.addActionListener(manejoArchivos.getGuardarComo(textoHTML, 1));
@@ -163,18 +168,28 @@ public class Ventana {
         guardarComoMenuAmbos.addActionListener(manejoArchivos.guardarComoAmbos(textoLFP, textoHTML));
         traducirMenu.addActionListener(analizar.getAnalizar(textoLFP, textoHTML));
         abrirMenu.addActionListener(manejoArchivos.leerLFP(textoLFP, textoHTML));
-        
-        
-        ActionListener limpieza = new ActionListener() {
+        guardarLexemasMenu.addActionListener(analizar.guardarTokensComoHTML());
+
+        ActionListener manualDeUsuario = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textoHTML.setText("");
-                textoLFP.setText("");
+                try {
+                    File path = new File("Documentacion/mUsuario.pdf");
+                    Desktop.getDesktop().open(path);
+                } catch (Exception e1) {
+                    
+                }
             }
         };
         
+        manualUsuarioMenu.addActionListener(manualDeUsuario);
+        
+        ActionListener limpieza = (ActionEvent e) -> {
+            textoHTML.setText("");
+            textoLFP.setText("");
+        };
+
         manualTecnicoMenu.addActionListener(limpieza);
-        
-        
-    }    
+
+    }
 }
